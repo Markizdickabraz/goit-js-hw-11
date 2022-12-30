@@ -8,9 +8,9 @@ const btnSubmit = document.querySelector('button');
 const gallery = document.querySelector('.gallery');
 
 
+
 btnSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
-
   try {
     const data = await fetchImg();
     renderImgGallery(data);
@@ -26,8 +26,8 @@ function renderImgGallery(data) {
         (({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `
         <div class="photo-card gallery__item">
-        <a class="gallery__link" href="${largeImageURL}" style ="display:block">
-   <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy"/>  </a>
+        <a class="gallery__link" href="${largeImageURL}" style ="display:inline-block">
+   <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
       <div class="info">
         <p class="info-item">
           <b>Likes</b>${likes}
@@ -52,22 +52,16 @@ let galleryOpenModal = new SimpleLightbox('.gallery a',{captionsData: "alt", cap
 galleryOpenModal.on('show.simplelightbox', function () {
 });
 
-// galleryOpenModal.on('error.simplelightbox', function (e) {
-// 	console.log(e); // some usefull information
-// });
+galleryOpenModal.on('error.simplelightbox', function (e) {
+	console.log(e); // some usefull information
+});
 
-// gallery.addEventListener('click', selectImg );
+gallery.addEventListener('click', selectImg );
 
-// function selectImg (event){
-//   event.preventDefault();
-//   // console.dir(event.target);
-//   if (event.target.nodeName !== "IMG") {
-//     return;
-//   }
-
-//   const galleryImg = document.querySelectorAll('.gallery__image');
-    
-//   galleryImg.forEach(img => {img.src = img.dataset.source});
-
-  
-// };
+function selectImg (event){
+  event.preventDefault();
+  console.dir(event.target);
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+};
