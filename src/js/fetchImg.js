@@ -1,25 +1,26 @@
 export { fetchImg };
 import axios from "axios";
-  
-const searchParams = {
-  key: '32463298-aa2adc14f1416dd47ab6801d7',
-  q:'cat',
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: true,
-}
+import Notiflix from "notiflix";
+import { renderImgGallery } from "../index";
 
-const options = JSON.stringify(searchParams);
-console.log(options)
+const input = document.querySelector('input');
+let name = null;
 
 const BASEURL = 'https://pixabay.com/api/';
 
-async function fetchImg(e) {
-  e.preventDefault();
-  try {
-    const response = await axios.get(`${BASEURL}?${options}`);
-    console.log(response);
-  } catch (error) {
-    console.error(error);
+async function fetchImg() {
+  name = input.value;
+  if (name.length === 0) {
+    return;
   }
+  try {
+    const response = await axios.get(`${BASEURL}?key=32463298-aa2adc14f1416dd47ab6801d7&q=${name}&image_type=photo&orientation=horizontal&safesearch=true`);
+    // const resultArray = await response.data.hits;
+    const result = await response.data.hits;
+    console.log(result);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+  
 }
