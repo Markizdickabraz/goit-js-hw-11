@@ -48,12 +48,13 @@ function renderImgGallery(data) {
   gallery.insertAdjacentHTML('afterbegin', markup);
 }
 
+
 let galleryOpenModal = new SimpleLightbox('.gallery a',{captionsData: "alt", captionDelay : 250});
 galleryOpenModal.on('show.simplelightbox', function () {
 });
 
 galleryOpenModal.on('error.simplelightbox', function (e) {
-	console.log(e); // some usefull information
+  console.log(e); // some usefull information
 });
 
 gallery.addEventListener('click', selectImg );
