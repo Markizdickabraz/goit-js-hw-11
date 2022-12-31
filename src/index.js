@@ -2,6 +2,7 @@ import { fetchImg } from "./js/fetchImg";
 export { renderImgGallery };
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
+import Notiflix from "notiflix";
 
 const form = document.querySelector('.search-form');
 const btnSubmit = document.querySelector('button');
@@ -14,13 +15,19 @@ btnSubmit.addEventListener('click', async (e) => {
   try {
     const data = await fetchImg();
     renderImgGallery(data);
+    let galleryOpenModal = new SimpleLightbox('.gallery a');
+      galleryOpenModal.on('show.simplelightbox', function () {
+});
   } catch (error) {
     console.log(error.message);
   }
 });
 
 function renderImgGallery(data) {
-  
+  if (data.length === 0) {
+    Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+    return;
+  }
   const markup = data
     .map(
         (({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
@@ -49,20 +56,16 @@ function renderImgGallery(data) {
 }
 
 
-let galleryOpenModal = new SimpleLightbox('.gallery a',{captionsData: "alt", captionDelay : 250});
-galleryOpenModal.on('show.simplelightbox', function () {
-});
+// galleryOpenModal.on('error.simplelightbox', function (e) {
+//   console.log(e); // some usefull information
+// });
 
-galleryOpenModal.on('error.simplelightbox', function (e) {
-  console.log(e); // some usefull information
-});
+// gallery.addEventListener('click', selectImg );
 
-gallery.addEventListener('click', selectImg );
-
-function selectImg (event){
-  event.preventDefault();
-  console.dir(event.target);
-  if (event.target.nodeName !== "IMG") {
-    return;
-  }
-};
+// function selectImg (event){
+//   // event.preventDefault();
+//   console.dir(event.target);
+//   if (event.target.nodeName !== "IMG") {
+//     return;
+//   }
+// };
