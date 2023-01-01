@@ -5,7 +5,7 @@ import { renderImgGallery } from "../index";
 
 const input = document.querySelector('input');
 let name = null;
-
+let page = 1;
 const BASEURL = 'https://pixabay.com/api/';
 
 async function fetchImg() {
@@ -14,7 +14,7 @@ async function fetchImg() {
     return;
   }
   try {
-    const response = await axios.get(`${BASEURL}?key=32463298-aa2adc14f1416dd47ab6801d7&q=${name}&image_type=photo&orientation=horizontal&safesearch=true`);
+    const response = await axios.get(`${BASEURL}?key=32463298-aa2adc14f1416dd47ab6801d7&q=${name}&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=${page}`);
     // const resultArray = await response.data.hits;
     const result = await response.data.hits;
     console.log(result);

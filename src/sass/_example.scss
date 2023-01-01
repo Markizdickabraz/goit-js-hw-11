@@ -60,3 +60,34 @@
   display: flex;
   flex-direction: column;
 }
+
+.is-hidden {
+  display: none;
+}
+
+.btn {
+  background-color: blue;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+
+
+  &:hover,
+  &:focus {
+    background-color: darkblue;
+  }
+
+  &:active {
+    background-color: white;
+    color: blue;
+  }
+
+}
+
+.input {
+  border-radius: 6px;
+  border: none;
+  margin-right: 10px;
+  height: 30px;
+}

@@ -7,6 +7,7 @@ import Notiflix from "notiflix";
 const form = document.querySelector('.search-form');
 const btnSubmit = document.querySelector('button');
 const gallery = document.querySelector('.gallery');
+const btnLoadMore = document.querySelector('.load-more'); 
 
 
 
@@ -15,6 +16,7 @@ btnSubmit.addEventListener('click', async (e) => {
   try {
     const data = await fetchImg();
     renderImgGallery(data);
+    btnLoadMore.classList.toggle("is-hidden");
     let galleryOpenModal = new SimpleLightbox('.gallery a');
       galleryOpenModal.on('show.simplelightbox', function () {
 });
