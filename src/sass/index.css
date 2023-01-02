@@ -84,4 +84,14 @@
   border: none;
   margin-right: 10px;
   height: 30px;
+}
+
+.photo-card {
+  border-radius: 6px;
+  background-color: lightblue;
+  box-shadow: 2px 2px 2px grey;
+  overflow: hidden;
+}
+.photo-card:hover {
+  box-shadow: 4px 4px 4px grey;
 }/*# sourceMappingURL=index.css.map */

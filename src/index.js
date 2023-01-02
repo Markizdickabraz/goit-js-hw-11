@@ -1,4 +1,5 @@
-import { fetchImg } from "./js/fetchImg";
+// import { fetchImg } from "./js/ask-server";
+import NewAskServer from "./js/ask-server";
 export { renderImgGallery };
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
@@ -9,14 +10,18 @@ const btnSubmit = document.querySelector('button');
 const gallery = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more'); 
 
-
+const newAskServer = new NewAskServer();
 
 btnSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
+  clearArticlesContainer();
+  btnLoadMore.classList.add('is-hidden');
   try {
-    const data = await fetchImg();
+    newAskServer.resetPage();
+    const data = await newAskServer.fetchArticles();
+    // newAskServer.fetchArticles();
     renderImgGallery(data);
-    btnLoadMore.classList.toggle("is-hidden");
+    btnLoadMore.classList.remove("is-hidden");
     let galleryOpenModal = new SimpleLightbox('.gallery a');
       galleryOpenModal.on('show.simplelightbox', function () {
 });
@@ -54,20 +59,26 @@ function renderImgGallery(data) {
       </div> `;
         }))
     .join(" ");
-  gallery.insertAdjacentHTML('afterbegin', markup);
+  gallery.insertAdjacentHTML('beforeend', markup);
 }
 
+btnLoadMore.addEventListener('click', async (e) => {
+e.preventDefault();
+  try {
+    const data = await newAskServer.fetchArticles();
+    // newAskServer.fetchArticles();
+    // newAskServer.incrementPage();
+  
+    renderImgGallery(data);
+    // btnLoadMore.classList.toggle("is-hidden");
+    let galleryOpenModal = new SimpleLightbox('.gallery a');
+      galleryOpenModal.on('show.simplelightbox', function () {
+});
+  } catch (error) {
+    console.log(error.message);
+  }
+});
 
-// galleryOpenModal.on('error.simplelightbox', function (e) {
-//   console.log(e); // some usefull information
-// });
-
-// gallery.addEventListener('click', selectImg );
-
-// function selectImg (event){
-//   // event.preventDefault();
-//   console.dir(event.target);
-//   if (event.target.nodeName !== "IMG") {
-//     return;
-//   }
-// };
+function clearArticlesContainer() {
+  gallery.innerHTML = " ";
+}
