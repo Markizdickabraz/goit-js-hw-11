@@ -16,12 +16,21 @@ btnSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
   clearArticlesContainer();
   btnLoadMore.classList.add('is-hidden');
+  btnLoadMore.classList.remove("is-visible");
+ 
   try {
     newAskServer.resetPage();
     const data = await newAskServer.fetchArticles();
-    // newAskServer.fetchArticles();
-    renderImgGallery(data);
+    // console.log(data);
+    const hits = await data.data.hits;
+    const totalHits = await data.data.totalHits;
+
+    Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
+
+    // console.log(hits);
+    renderImgGallery(hits);
     btnLoadMore.classList.remove("is-hidden");
+    btnLoadMore.classList.add('is-visible');
     let galleryOpenModal = new SimpleLightbox('.gallery a');
       galleryOpenModal.on('show.simplelightbox', function () {
 });
@@ -30,12 +39,12 @@ btnSubmit.addEventListener('click', async (e) => {
   }
 });
 
-function renderImgGallery(data) {
-  if (data.length === 0) {
+function renderImgGallery(hits) {
+  if (hits.length === 0) {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
     return;
   }
-  const markup = data
+  const markup = hits
     .map(
         (({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `
@@ -60,20 +69,27 @@ function renderImgGallery(data) {
         }))
     .join(" ");
   gallery.insertAdjacentHTML('beforeend', markup);
+
 }
 
 btnLoadMore.addEventListener('click', async (e) => {
-e.preventDefault();
+  e.preventDefault();
+
   try {
     const data = await newAskServer.fetchArticles();
-    // newAskServer.fetchArticles();
-    // newAskServer.incrementPage();
-  
-    renderImgGallery(data);
-    // btnLoadMore.classList.toggle("is-hidden");
+    const hits = await data.data.hits;
+    
+    renderImgGallery(hits);
+
+    newAskServer.endTotalHits();
+
     let galleryOpenModal = new SimpleLightbox('.gallery a');
-      galleryOpenModal.on('show.simplelightbox', function () {
-});
+    galleryOpenModal.on('show.simplelightbox', function () {
+    });
+
+    // ? refresh SimpleLightbox???
+
+    galleryOpenModal.refresh();
   } catch (error) {
     console.log(error.message);
   }
