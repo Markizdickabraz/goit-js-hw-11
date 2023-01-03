@@ -1,36 +1,35 @@
-// import { fetchImg } from "./js/ask-server";
+// імпорти
+
 import NewAskServer from "./js/ask-server";
 export { renderImgGallery };
 import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
 
-const form = document.querySelector('.search-form');
+// елементи
 const btnSubmit = document.querySelector('button');
 const gallery = document.querySelector('.gallery');
 const btnLoadMore = document.querySelector('.load-more'); 
 
 const newAskServer = new NewAskServer();
 
+// подія сабміт
 btnSubmit.addEventListener('click', async (e) => {
   e.preventDefault();
+  btnLoadMore.classList.replace('is-visible', 'is-hidden');
   clearArticlesContainer();
-  btnLoadMore.classList.add('is-hidden');
-  btnLoadMore.classList.remove("is-visible");
  
   try {
     newAskServer.resetPage();
     const data = await newAskServer.fetchArticles();
-    // console.log(data);
+
     const hits = await data.data.hits;
     const totalHits = await data.data.totalHits;
 
     Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
 
-    // console.log(hits);
     renderImgGallery(hits);
-    btnLoadMore.classList.remove("is-hidden");
-    btnLoadMore.classList.add('is-visible');
+     btnLoadMore.classList.replace('is-hidden', 'is-visible');
     let galleryOpenModal = new SimpleLightbox('.gallery a');
       galleryOpenModal.on('show.simplelightbox', function () {
 });
@@ -39,18 +38,21 @@ btnSubmit.addEventListener('click', async (e) => {
   }
 });
 
+// функція рендеру галереї
 function renderImgGallery(hits) {
   if (hits.length === 0) {
     Notiflix.Notify.failure("Sorry, there are no images matching your search query. Please try again.");
+    btnLoadMore.classList.replace('is-visible', 'is-hidden');
     return;
   }
+ 
   const markup = hits
     .map(
         (({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) => {
         return `
         <div class="photo-card gallery__item">
-        <a class="gallery__link" href="${largeImageURL}" style ="display:inline-block">
-   <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" /></a>
+        <a class="gallery__link" href="${largeImageURL}" style ="display:inline-block; text-decoration:none; color:black;">
+   <img class="gallery__image" src="${webformatURL}" alt="${tags}" loading="lazy" />
       <div class="info">
         <p class="info-item">
           <b>Likes</b>${likes}
@@ -64,24 +66,33 @@ function renderImgGallery(hits) {
         <p class="info-item">
           <b>Downloads</b>${downloads}
         </p>
-      </div>
+      </div></a>
       </div> `;
-        }))
+      }))
+ 
     .join(" ");
   gallery.insertAdjacentHTML('beforeend', markup);
 
+  const { height: cardHeight } = document
+  .querySelector(".gallery")
+  .firstElementChild.getBoundingClientRect();
+
+window.scrollBy({
+  top: cardHeight * 0.25,
+  behavior: "smooth",
+});
 }
 
+// подія показати більше
 btnLoadMore.addEventListener('click', async (e) => {
   e.preventDefault();
 
   try {
     const data = await newAskServer.fetchArticles();
     const hits = await data.data.hits;
-    
+     
     renderImgGallery(hits);
-
-    newAskServer.endTotalHits();
+ 
 
     let galleryOpenModal = new SimpleLightbox('.gallery a');
     galleryOpenModal.on('show.simplelightbox', function () {
@@ -95,6 +106,7 @@ btnLoadMore.addEventListener('click', async (e) => {
   }
 });
 
+// функція онулення сторніки
 function clearArticlesContainer() {
   gallery.innerHTML = " ";
 }
