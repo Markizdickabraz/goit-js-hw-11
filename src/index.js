@@ -90,16 +90,11 @@ btnLoadMore.addEventListener('click', async (e) => {
   try {
     const data = await newAskServer.fetchArticles();
     const hits = await data.data.hits;
-     
     renderImgGallery(hits);
- 
-
     let galleryOpenModal = new SimpleLightbox('.gallery a');
     galleryOpenModal.on('show.simplelightbox', function () {
     });
-
-    // ? refresh SimpleLightbox???
-
+    // ? refresh SimpleLightbox???npm 
     galleryOpenModal.refresh();
   } catch (error) {
     console.log(error.message);
